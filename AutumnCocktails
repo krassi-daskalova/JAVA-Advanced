@@ -1,0 +1,105 @@
+package StackQueue;
+
+import java.sql.Statement;
+import java.util.ArrayDeque;
+import java.util.Scanner;
+
+public class AutumnCocktails {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        String[] commandIngredients = scanner.nextLine().split(" ");
+        String[] commandFreshness = scanner.nextLine().split(" ");
+
+        ArrayDeque<Integer> queueIngredients = new ArrayDeque<>();
+        ArrayDeque<Integer> stackFreshness = new ArrayDeque<>();
+
+        for (int i = 0; i < commandIngredients.length; i++) {
+            int ingredient = Integer.parseInt(String.valueOf(commandIngredients[i]));
+            queueIngredients.add(ingredient);
+        }
+        for (int i = 0; i < commandFreshness.length; i++) {
+            int freshnessLevel = Integer.parseInt(String.valueOf(commandFreshness[i]));
+            stackFreshness.push(freshnessLevel);
+        }
+        int total = 0;
+        int numFirstCocktail = 0;
+        int numSecondCocktail = 0;
+        int numThirdCocktail = 0;
+        int numForthCocktail = 0;
+
+        String pearSour = " # Pear Sour --> ";
+        String harvest = " # The Harvest --> ";
+        String apple = " # Apple Hinny --> ";
+        String high = " # High Fashion --> ";
+
+        while (!queueIngredients.isEmpty() && !stackFreshness.isEmpty()) {
+            int firstIngr = queueIngredients.getFirst();
+            int lastFresh = stackFreshness.getFirst();
+            total = firstIngr * lastFresh;
+            if (firstIngr > 0) {
+                total = firstIngr * lastFresh;
+                if (total == 150 || total == 250 || total == 300 || total == 400) {
+                    queueIngredients.pollFirst();
+                    stackFreshness.pop();
+                } else {
+                    if (!stackFreshness.isEmpty()) {
+                        stackFreshness.pop();
+                        firstIngr = firstIngr + 5;
+                        queueIngredients.removeFirst();
+                        queueIngredients.offer(firstIngr);
+                    }
+                }
+            } else {
+                queueIngredients.removeFirst();
+                firstIngr = queueIngredients.getFirst();
+                total = firstIngr * lastFresh;
+                if (!stackFreshness.isEmpty()) {
+                    stackFreshness.pop();
+                    firstIngr = firstIngr + 5;
+                    queueIngredients.removeFirst();
+                    queueIngredients.offer(firstIngr);
+                }
+            }
+            if (total == 150) {
+                numFirstCocktail++;
+            }
+            if (total == 250) {
+                numSecondCocktail++;
+            }
+            if (total == 300) {
+                numThirdCocktail++;
+            }
+            if (total == 400) {
+                numForthCocktail++;
+            }
+        }
+        if (numFirstCocktail >= 1 && numSecondCocktail >= 1 && numThirdCocktail >= 1 && numForthCocktail >= 1) {
+            System.out.println("It's party time! The cocktails are ready!");
+            System.out.printf("%s%d%n", apple, numThirdCocktail);
+            System.out.printf("%s%d%n", high, numForthCocktail);
+            System.out.printf("%s%d%n", pearSour, numFirstCocktail);
+            System.out.printf("%s%d%n", harvest, numSecondCocktail);
+        } else {
+            System.out.println("What a pity! You didn't manage to prepare all cocktails.");
+            int sumLeftIngredients = 0;
+            int numOfLeftIngr = queueIngredients.size();
+            for (int i = 0; i < numOfLeftIngr; i++) {
+                sumLeftIngredients = sumLeftIngredients + queueIngredients.pop();
+            }
+            System.out.printf("Ingredients left: %d%n", sumLeftIngredients);
+            if (numFirstCocktail != 0) {
+                System.out.printf("%s%d%n", pearSour, numFirstCocktail);
+            }
+            if (numSecondCocktail != 0) {
+                System.out.printf("%s%d%n", harvest, numSecondCocktail);
+            }
+            if (numThirdCocktail != 0) {
+                System.out.printf("%s%d%n", apple, numThirdCocktail);
+            }
+            if (numForthCocktail != 0) {
+                System.out.printf("%s%d%n", high, numForthCocktail);
+            }
+        }
+    }
+}
